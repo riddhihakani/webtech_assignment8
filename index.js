@@ -21,7 +21,7 @@ const geo_key = "AIzaSyDWYRk1Fqf93fBHW0pQ7RmOtKjTQOa4sT4";
 app.use(express.static(__dirname + '/dist/wt'));
 app.use('/search', express.static('/dist/wt'));
 
-app.get('/', (req, res) => {        
+app.get('/search', (req, res) => {        
     res.sendFile(__dirname + '/dist/wt/index.html');      
                                                         
 });
@@ -33,10 +33,10 @@ app.get('/', (req, res) => {
 
 app.get("/search/tm", async (req,res)=>{
     console.log("in node js file");
-    // console.log(req.query.keyword);
-    // console.log(req.query.category);
-    // console.log(req.query.location);
-    // console.log(req.query.distance);
+    console.log(req.query.keyword);
+    console.log(req.query.category);
+    console.log(req.query.location);
+    console.log(req.query.distance);
     const headers = {
       Authorization: `Bearer ${ticketmaster_key}`,
       // 'Content-Type': 'application/json',
