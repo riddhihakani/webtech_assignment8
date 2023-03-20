@@ -1,5 +1,6 @@
 const express = require('express'); 
 const axios = require('axios');
+const geohash = require('ngeohash');
 const https = require('https');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -33,31 +34,60 @@ app.get('/search', (req, res) => {
 
 app.get("/search/tm", async (req,res)=>{
     console.log("in node js file");
-    console.log(req.query.keyword);
-    console.log(req.query.category);
-    console.log(req.query.location);
-    console.log(req.query.distance);
-    const headers = {
-      Authorization: `Bearer ${ticketmaster_key}`,
+    // console.log(req.query.keyword);
+    // console.log(req.query.category);
+    // console.log(req.query.distance);
+    console.log(req.query.lat);
+    console.log(req.query.long);
+
+    var g = geohash.encode(req.query.lat, req.query.long);
+    console.log(g);
+    //console.log(geohash.decode(g));
+    // const headers = {
+    //   Authorization: `Bearer ${ticketmaster_key}`,
       // 'Content-Type': 'application/json',
-    };
+    //};
     
-    const param = {
-      keyword: req.query.keyword
-    }
+    // const param = {
+    //   keyword: req.query.keyword
+    // }
 
     // console.log(params.keyword)
     //https://app.ticketmaster.com/discovery/v2/events.json?&apikey=${ticketmaster_key}&keyword=${req.query.keyword}
 
     //const e = await axios.get(`https://app.ticketmaster.com/discovery/v2/events.json`,{headers,params})
-    const e = await axios({
+    if(req.query.category=='0'){
+      const e = await axios({
+        url: "https://app.ticketmaster.com/discovery/v2/events.json",
+        // headers: {Authorization:`Bearer ${ticketmaster_key}`},
+        params: {keyword: req.query.keyword, distance: req.query.distance, geoPoint: g, unit: "miles", apikey: ticketmaster_key}
+      })
+
+      console.log("events received successfully");
+      console.log(e.data._embedded.events[0]);
+      //res.json(e);
+    }else{
+      const e = await axios({
       url: "https://app.ticketmaster.com/discovery/v2/events.json",
       // headers: {Authorization:`Bearer ${ticketmaster_key}`},
-      params: {keyword: req.query.keyword, apikey: ticketmaster_key}
+      params: {keyword: req.query.keyword, distance: req.query.distance, segmentID: req.query.category, geoPoint: g, unit: "miles", apikey: ticketmaster_key}
     })
     // res.json(events)
     console.log("events received successfully");
-    console.log(e.data._embedded.events[0]);
+    console.log(e.data._embedded.events);
+    //res.json(e);
+    }
+    
+})
+
+app.get("/suggest", async (req, res) => {
+  const l = await axios({
+    url: "https://app.ticketmaster.com/discovery/v2/suggest",
+    // headers: {Authorization:`Bearer ${ticketmaster_key}`},
+    params: {keyword: req.query.keyword, apikey: ticketmaster_key}
+
+  })
+  console.log(l);
 })
 
 app.listen(port, () => {            
