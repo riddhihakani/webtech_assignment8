@@ -64,8 +64,10 @@ app.get("/search/tm", async (req,res)=>{
       })
 
       console.log("events received successfully");
-      console.log(e.data._embedded.events[0]);
-      //res.json(e);
+      console.log(e);
+      // e = JSON.parse(e);
+      // console.log(e);
+      res.json(e.data);
     }else{
       const e = await axios({
       url: "https://app.ticketmaster.com/discovery/v2/events.json",
@@ -74,13 +76,17 @@ app.get("/search/tm", async (req,res)=>{
     })
     // res.json(events)
     console.log("events received successfully");
-    console.log(e.data._embedded.events);
+    console.log(e);
     //res.json(e);
-    }
+    // e = JSON.parse(e);
+    // console.log(e);
+    res.json(e.data);
+  }
     
 })
 
 app.get("/suggest", async (req, res) => {
+  console.log(Req.query.keyword);
   const l = await axios({
     url: "https://app.ticketmaster.com/discovery/v2/suggest",
     // headers: {Authorization:`Bearer ${ticketmaster_key}`},
@@ -88,6 +94,20 @@ app.get("/suggest", async (req, res) => {
 
   })
   console.log(l);
+})
+
+app.get("/eventDetails", async (req, res) => {
+
+  console.log(req.query.id);
+  const d = await axios({
+    url: "https://app.ticketmaster.com/discovery/v2/events",
+    // headers: {Authorization:`Bearer ${ticketmaster_key}`},
+    params: {id: req.query.id, apikey: ticketmaster_key}
+
+  })
+  console.log("in event details");
+  console.log(d);
+  res.json(d.data);
 })
 
 app.listen(port, () => {            
