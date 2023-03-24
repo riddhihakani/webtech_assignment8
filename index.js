@@ -9,7 +9,7 @@ const app = express();
 const port = 5000;  
 
 
-
+'use strict';
 app.use(cors());
 
 app.use(bodyParser.json());
@@ -21,6 +21,7 @@ const geo_key = "AIzaSyDWYRk1Fqf93fBHW0pQ7RmOtKjTQOa4sT4";
 
 app.use(express.static(__dirname + '/dist/wt'));
 app.use('/search', express.static('/dist/wt'));
+app.use('/favorites', express.static('/dist/wt'));
 
 app.get('/search', (req, res) => {        
     res.sendFile(__dirname + '/dist/wt/index.html');      
@@ -35,7 +36,7 @@ app.get('/search', (req, res) => {
 app.get("/search/tm", async (req,res)=>{
     console.log("in node js file");
     // console.log(req.query.keyword);
-    // console.log(req.query.category);
+    console.log(req.query.category);
     // console.log(req.query.distance);
     console.log(req.query.lat);
     console.log(req.query.long);
@@ -56,11 +57,11 @@ app.get("/search/tm", async (req,res)=>{
     //https://app.ticketmaster.com/discovery/v2/events.json?&apikey=${ticketmaster_key}&keyword=${req.query.keyword}
 
     //const e = await axios.get(`https://app.ticketmaster.com/discovery/v2/events.json`,{headers,params})
-    if(req.query.category=='0'){
+    if(req.query.category=='Default'){
       const e = await axios({
         url: "https://app.ticketmaster.com/discovery/v2/events.json",
         // headers: {Authorization:`Bearer ${ticketmaster_key}`},
-        params: {keyword: req.query.keyword, distance: req.query.distance, geoPoint: g, unit: "miles", apikey: ticketmaster_key}
+        params: {apikey: ticketmaster_key, keyword: req.query.keyword, radius: req.query.distance, unit: "miles", geoPoint: g}
       })
 
       console.log("events received successfully");
@@ -72,7 +73,7 @@ app.get("/search/tm", async (req,res)=>{
       const e = await axios({
       url: "https://app.ticketmaster.com/discovery/v2/events.json",
       // headers: {Authorization:`Bearer ${ticketmaster_key}`},
-      params: {keyword: req.query.keyword, distance: req.query.distance, segmentID: req.query.category, geoPoint: g, unit: "miles", apikey: ticketmaster_key}
+      params: {apikey: ticketmaster_key, keyword: req.query.keyword, segmentId: req.query.category, radius: req.query.distance, unit: "miles", geoPoint: g}
     })
     // res.json(events)
     console.log("events received successfully");
