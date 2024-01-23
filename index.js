@@ -8,17 +8,17 @@ const bodyParser = require('body-parser');
 const { response } = require('express');
 const app = express();              
 const port = 5000;  
-const spotifyClientID = "51633f7a277c483a8b9e48a38698afd0";
-const spotifyClientSecret = "29450660488d4b17910e2c55c78b93e4";
+const spotifyClientID = "";
+const spotifyClientSecret = "";
 
 'use strict';
 app.use(cors());
 
 app.use(bodyParser.json());
 
-const ticketmaster_key = "T5ZcSankhfeAEcEuAk0S2S47mhQQGURD";
-const ip_key = "a53d3fcfb40158";
-const geo_key = "AIzaSyDWYRk1Fqf93fBHW0pQ7RmOtKjTQOa4sT4";
+const ticketmaster_key = "";
+const ip_key = "";
+const geo_key = "";
 
 var spotifyApi = new SpotifyWebApi({
   clientId: spotifyClientID,
